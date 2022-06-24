@@ -9,14 +9,25 @@ const {
 } = require('graphql');
 const graphql = require('graphql');
 const UserType = require('./TypeDefs/UserType');
+const UserTypeList = require('./TypeDefs/UserTypeList');
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
     getAllUsers: {
-      type: new GraphQLList(UserType),
-      resolve() {
-        return userData;
+      type: UserTypeList,
+      args: {
+        limit: { type: GraphQLInt },
+        page: { type: GraphQLInt },
+      },
+      resolve(parent, args) {
+        let data = [...userData];
+        if (args.limit) {
+          const start = (args.page - 1) * args.limit;
+          data = data.splice(start, args.limit);
+        }
+        const meta = { page: args.page, total: userData.length };
+        return { data, meta };
       },
     },
     getUserByName: {
