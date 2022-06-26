@@ -9,8 +9,8 @@ const UserTypeList = new GraphQLObjectType({
       type: new GraphQLObjectType({
         name: 'pagination',
         fields: () => ({
-          page: { type: GraphQLInt },
-          total: { type: GraphQLInt },
+          pageCount: { type: GraphQLInt },
+          totalRecord: { type: GraphQLInt },
         }),
       }),
     },

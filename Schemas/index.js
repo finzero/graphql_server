@@ -26,24 +26,21 @@ const RootQuery = new GraphQLObjectType({
           const start = (args.page - 1) * args.limit;
           data = data.splice(start, args.limit);
         }
-        const meta = { page: args.page, total: userData.length };
+        const totalRecord = userData.length;
+        const meta = {
+          pageCount: Math.ceil(totalRecord / args.limit),
+          totalRecord,
+        };
         return { data, meta };
       },
     },
-    getUserByName: {
+    getUserById: {
       type: UserType,
       args: {
-        name: { type: GraphQLString },
+        id: { type: GraphQLInt },
       },
       resolve(parents, args) {
-        const user = userData.find(
-          (user) =>
-            [user.first_name, user.last_name]
-              .join(' ')
-              .toLowerCase()
-              .indexOf(args.name.toLowerCase()) !== -1
-        );
-        return user;
+        return userData.find((user) => user.id === args.id);
       },
     },
   },
